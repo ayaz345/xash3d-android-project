@@ -248,13 +248,15 @@ def apply_aapt(self):
 	except AttributeError:
 		pass
 
-	self.env.OUTAPK_SIGNED = self.name + '-signed.apk'
-	self.env.OUTAPK = self.name + '.apk'
-	self.env.OUTAPK_UNALIGNED = self.name + '.unaligned.apk'
-	self.env.OUTAPK_UNALIGNED_NOCLASSES = self.name + '.unaligned.noclasses.apk'
+	self.env.OUTAPK_SIGNED = f'{self.name}-signed.apk'
+	self.env.OUTAPK = f'{self.name}.apk'
+	self.env.OUTAPK_UNALIGNED = f'{self.name}.unaligned.apk'
+	self.env.OUTAPK_UNALIGNED_NOCLASSES = f'{self.name}.unaligned.noclasses.apk'
 
 	if self.env.JNIDIR:
-		self.env.OUTAPK_UNALIGNED_NOCLASSES_NOJNI = self.name + '.unaligned.noclasses.nojni.apk'
+		self.env.OUTAPK_UNALIGNED_NOCLASSES_NOJNI = (
+			f'{self.name}.unaligned.noclasses.nojni.apk'
+		)
 	else:
 		self.env.OUTAPK_UNALIGNED_NOCLASSES_NOJNI = self.env.OUTAPK_UNALIGNED_NOCLASSES
 
@@ -267,7 +269,10 @@ def apply_aapt(self):
 	self.env.TARGET_API = getattr(self, 'target_api', 10) # Android 2.3.3 TODO: parse AndroidManifest.xml to get target API!
 	if self.env.termux:
 		classpath = os.path.join(os.environ['PREFIX'], 'share', 'java', 'android.jar')
-	else: classpath = os.path.join(sdk, 'platforms', 'android-' + str(self.env.TARGET_API), 'android.jar')
+	else:else
+		classpath = os.path.join(
+			sdk, 'platforms', f'android-{str(self.env.TARGET_API)}', 'android.jar'
+		)
 	self.env.CLASSPATH_ANDROID = classpath
 
 
@@ -332,6 +337,8 @@ def set_android_classpath(self):
 	if len(self.env.CLASSPATH) == 0:
 		self.env.D8_CLASSPATH = ''
 	else:
-		self.env.D8_CLASSPATH = '--classpath' + os.pathsep.join(self.env.CLASSPATH) + os.pathsep # old classpath without android.jar for d8
+		self.env.D8_CLASSPATH = (
+			f'--classpath{os.pathsep.join(self.env.CLASSPATH)}{os.pathsep}'
+		)
 	for x in self.tasks:
 		x.env.CLASSPATH = self.env.CLASSPATH_ANDROID + x.env.CLASSPATH

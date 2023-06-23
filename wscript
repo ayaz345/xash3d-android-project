@@ -44,7 +44,9 @@ def options(opt):
 		if not os.path.isfile(os.path.join(i.name, 'wscript')):
 			# HACKHACK: this way we get warning message right in the help
 			# so this just becomes more noticeable
-			opt.add_option_group('Cannot find wscript in ' + i.name + '. You probably missed submodule update')
+			opt.add_option_group(
+				f'Cannot find wscript in {i.name}. You probably missed submodule update'
+			)
 			continue
 
 		if i.options:
@@ -62,10 +64,10 @@ def set_ignored_subdirs(subdirs):
 
 def configure(conf):
 	conf.start_msg('Build type')
-	if conf.options.BUILD_TYPE == None:
+	if conf.options.BUILD_TYPE is None:
 		conf.end_msg('not set', color='RED')
 		conf.fatal('Please set a build type, for example "--build-type=release"')
-	elif not conf.options.BUILD_TYPE in ['release', 'debug', 'none']:
+	elif conf.options.BUILD_TYPE not in ['release', 'debug', 'none']:
 		conf.end_msg(conf.options.BUILD_TYPE, color='RED')
 		conf.fatal('Invalid build type. Valid are "debug", "release" or "none"')
 	conf.end_msg(conf.options.BUILD_TYPE)
@@ -81,10 +83,10 @@ def configure(conf):
 
 		conf.setenv(i.name, conf.env) # derive new env from global one
 		conf.env.ENVNAME = i.name
-		conf.msg(msg='--> ' + i.name, result='in progress', color='BLUE')
+		conf.msg(msg=f'--> {i.name}', result='in progress', color='BLUE')
 		# configure in standalone env
 		conf.recurse(i.name)
-		conf.msg(msg='<-- ' + i.name, result='done', color='BLUE')
+		conf.msg(msg=f'<-- {i.name}', result='done', color='BLUE')
 		conf.setenv('')
 
 def build(bld):
